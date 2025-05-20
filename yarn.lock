@@ -1224,7 +1224,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"acorn@npm:^8.14.0":
+"acorn@npm:^8.14.0, acorn@npm:^8.14.1":
   version: 8.14.1
   resolution: "acorn@npm:8.14.1"
   bin:
@@ -2065,6 +2065,7 @@ __metadata:
     "@types/react": "npm:^19.1.2"
     "@types/react-dom": "npm:^19.1.2"
     "@vitejs/plugin-react": "npm:^4.4.1"
+    acorn: "npm:^8.14.1"
     classnames: "npm:^2.5.1"
     eslint: "npm:^9.25.0"
     eslint-config-prettier: "npm:^10.1.5"
