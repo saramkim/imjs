@@ -12,6 +12,7 @@ export class ExecutionContext {
   callStack: string[] = [];
   webApi: WebApiTask[] = [];
   taskQueue: Task[] = [];
+  consoleOutput: string[] = [];
 
   pushCallStack(fnName: string) {
     this.callStack.push(fnName);
@@ -35,5 +36,13 @@ export class ExecutionContext {
 
   dequeueTask() {
     return this.taskQueue.shift();
+  }
+
+  appendConsoleLog(message: string) {
+    this.consoleOutput.push(message);
+  }
+
+  clearConsole() {
+    this.consoleOutput = [];
   }
 }
