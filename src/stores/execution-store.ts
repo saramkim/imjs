@@ -10,7 +10,7 @@ export interface ExecutionState {
   reset: () => void;
 }
 
-export const executionStore = create<ExecutionState>((set) => ({
+export const useExecutionStore = create<ExecutionState>((set) => ({
   callStack: [],
   webApi: [],
   taskQueue: [],

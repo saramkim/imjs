@@ -10,7 +10,7 @@ interface ConfigState {
   reset: () => void;
 }
 
-export const configStore = create<ConfigState>((set) => ({
+export const useConfigStore = create<ConfigState>((set) => ({
   isPlaying: false,
   autoPlay: false,
   speed: 1000,

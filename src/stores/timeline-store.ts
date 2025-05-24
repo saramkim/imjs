@@ -10,7 +10,7 @@ interface TimelineState {
   reset: () => void;
 }
 
-export const timelineStore = create<TimelineState>((set) => ({
+export const useTimelineStore = create<TimelineState>((set) => ({
   commands: [],
   currentIndex: 0,
   totalCommands: 0,
