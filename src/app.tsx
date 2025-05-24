@@ -1,5 +1,5 @@
-import React from 'react';
+import { AppLayout } from './ui/layout/app-layout';
 
 export function App() {
-  return <></>;
+  return <AppLayout />;
 }
