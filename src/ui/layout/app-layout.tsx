@@ -1,4 +1,4 @@
-import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels';
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from './resizable-panel-layout';
 
 export function AppLayout() {
   return (
@@ -8,51 +8,51 @@ export function AppLayout() {
         <div>[Timeline]</div>
       </div>
 
-      <PanelGroup direction="horizontal" className="flex-1">
-        <Panel defaultSize={40}>
-          <PanelGroup direction="vertical" className="h-full">
-            <Panel defaultSize={60}>
+      <ResizablePanelGroup direction="horizontal">
+        <ResizablePanel defaultSize={40}>
+          <ResizablePanelGroup direction="vertical">
+            <ResizablePanel defaultSize={60}>
               <div className="h-full p-2">[Editor]</div>
-            </Panel>
-            <PanelResizeHandle className="h-1 bg-gray-300" />
-            <Panel defaultSize={40}>
+            </ResizablePanel>
+            <ResizableHandle />
+            <ResizablePanel defaultSize={40}>
               <div className="h-full p-2">[Console]</div>
-            </Panel>
-          </PanelGroup>
-        </Panel>
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        </ResizablePanel>
 
-        <PanelResizeHandle className="w-1 bg-gray-300" />
+        <ResizableHandle />
 
-        <Panel defaultSize={60}>
-          <PanelGroup direction="vertical" className="h-full">
-            <Panel defaultSize={70}>
-              <PanelGroup direction="horizontal" className="h-full">
-                <Panel defaultSize={50}>
+        <ResizablePanel defaultSize={60}>
+          <ResizablePanelGroup direction="vertical">
+            <ResizablePanel defaultSize={70}>
+              <ResizablePanelGroup direction="horizontal">
+                <ResizablePanel defaultSize={50}>
                   <div className="h-full p-2">[Call Stack]</div>
-                </Panel>
-                <PanelResizeHandle className="w-1 bg-gray-300" />
-                <Panel defaultSize={50}>
+                </ResizablePanel>
+                <ResizableHandle />
+                <ResizablePanel defaultSize={50}>
                   <div className="h-full p-2">[Web API]</div>
-                </Panel>
-              </PanelGroup>
-            </Panel>
+                </ResizablePanel>
+              </ResizablePanelGroup>
+            </ResizablePanel>
 
-            <PanelResizeHandle className="h-1 bg-gray-300" />
+            <ResizableHandle />
 
-            <Panel defaultSize={30}>
-              <PanelGroup direction="horizontal" className="h-full">
-                <Panel defaultSize={20}>
+            <ResizablePanel defaultSize={30}>
+              <ResizablePanelGroup direction="horizontal">
+                <ResizablePanel defaultSize={20}>
                   <div className="h-full p-2">[Event Loop]</div>
-                </Panel>
-                <PanelResizeHandle className="w-1 bg-gray-300" />
-                <Panel defaultSize={80}>
+                </ResizablePanel>
+                <ResizableHandle />
+                <ResizablePanel defaultSize={80}>
                   <div className="h-full p-2">[Task Queue]</div>
-                </Panel>
-              </PanelGroup>
-            </Panel>
-          </PanelGroup>
-        </Panel>
-      </PanelGroup>
+                </ResizablePanel>
+              </ResizablePanelGroup>
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        </ResizablePanel>
+      </ResizablePanelGroup>
     </div>
   );
 }
