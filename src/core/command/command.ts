@@ -1,4 +1,4 @@
-import type { ExecutionContext } from '../simulator/execution-context';
+import type { ExecutionContext } from '@core/simulator/execution-context';
 
 export abstract class Command {
   private readonly _id: string;

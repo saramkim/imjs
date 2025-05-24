@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { Command } from '../core/command/command';
+import type { Command } from '@core/command/command';
 
 interface TimelineState {
   commands: Command[];

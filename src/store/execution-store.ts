@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { ExecutionContext, type Task, type WebApiTask } from '../core/simulator/execution-context';
+import { ExecutionContext, type Task, type WebApiTask } from '@core/simulator/execution-context';
 
 export interface ExecutionState {
   callStack: string[];

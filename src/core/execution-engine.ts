@@ -1,5 +1,5 @@
-import { Interpreter } from './interpreter/interpreter';
-import { Simulator } from './simulator/simulator';
+import { Interpreter } from '@core/interpreter/interpreter';
+import { Simulator } from '@core/simulator/simulator';
 
 export class ExecutionEngine {
   private interpreter = new Interpreter();

@@ -1,5 +1,5 @@
 import { Command } from './command';
-import type { ExecutionContext } from '../simulator/execution-context';
+import type { ExecutionContext } from '@core/simulator/execution-context';
 
 export class PushCallStackCommand extends Command {
   private fnName: string;

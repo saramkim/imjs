@@ -1,5 +1,5 @@
-import type { Command } from '../command/command';
-import { ExecutionContext } from './execution-context';
+import type { Command } from '@core/command/command';
+import { ExecutionContext } from '@core/simulator/execution-context';
 
 export class Simulator {
   private commands: Command[] = [];

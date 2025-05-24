@@ -1,6 +1,6 @@
 import { Command } from './command';
-import type { ExecutionContext } from '../simulator/execution-context';
-import type { Task } from '../simulator/execution-context';
+import type { ExecutionContext } from '@core/simulator/execution-context';
+import type { Task } from '@core/simulator/execution-context';
 
 export class SetTimeoutCommand extends Command {
   private callbackId: string;

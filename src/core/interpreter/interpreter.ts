@@ -1,7 +1,7 @@
 import * as acorn from 'acorn';
-import { Command } from '../command/command';
-import { ConsoleLogCommand } from '../command/console-log-command';
-import { SetTimeoutCommand } from '../command/set-timeout-command';
+import { Command } from '@core/command/command';
+import { ConsoleLogCommand } from '@core/command/console-log-command';
+import { SetTimeoutCommand } from '@core/command/set-timeout-command';
 
 let commandId = 0;
 const nextId = () => `cmd_${commandId++}`;
