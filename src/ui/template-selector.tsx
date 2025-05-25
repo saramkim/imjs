@@ -9,7 +9,7 @@ export const TemplateSelector = () => {
     <select
       value={current}
       onChange={(e) => setTemplate(e.target.value as CodeTemplateKey)}
-      className="border px-2 border-gray-300 rounded outline-none"
+      className="border p-2 border-gray-300 rounded outline-none"
     >
       {Object.entries(CODE_TEMPLATES).map(([key, { label }]) => (
         <option key={key} value={key}>

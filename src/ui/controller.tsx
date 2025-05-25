@@ -1,9 +1,38 @@
 import { useConfigStore } from '@store/config-store';
 import { executionEngine } from '@core/execution-engine';
 
+import { TemplateSelector } from './template-selector';
+import { useCodeStore } from '@store/code-store';
+
 export const Controller = () => {
+  const isLoaded = useConfigStore((state) => state.isLoaded);
+
+  return isLoaded ? <Controls /> : <SelectCode />;
+};
+
+const SelectCode = () => {
+  const code = useCodeStore((state) => state.code);
+  const setIsLoaded = useConfigStore((state) => state.setIsLoaded);
+
+  const handleRun = () => {
+    executionEngine.load(code);
+    setIsLoaded(true);
+  };
+
+  return (
+    <div className="flex items-center gap-4 p-4">
+      <TemplateSelector />
+      <button onClick={handleRun} className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
+        Run Code
+      </button>
+    </div>
+  );
+};
+
+const Controls = () => {
   const isPlaying = useConfigStore((state) => state.isPlaying);
   const setIsPlaying = useConfigStore((state) => state.setIsPlaying);
+  const reset = useConfigStore((state) => state.reset);
 
   const handlePlay = () => {
     executionEngine.play();
@@ -19,8 +48,17 @@ export const Controller = () => {
     executionEngine.step();
   };
 
+  const handleReset = () => {
+    executionEngine.reset();
+    reset();
+  };
+
   return (
     <div className="flex items-center gap-4 p-4">
+      <button onClick={handleReset} className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
+        X
+      </button>
+
       {isPlaying ? (
         <button onClick={handlePause} className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
           Pause
@@ -40,7 +78,7 @@ export const Controller = () => {
   );
 };
 
-function SpeedSlider() {
+const SpeedSlider = () => {
   const speed = useConfigStore((state) => state.speed);
   const setSpeed = useConfigStore((state) => state.setSpeed);
 
@@ -66,4 +104,4 @@ function SpeedSlider() {
       <span className="text-sm text-gray-600">{speed}ms</span>
     </div>
   );
-}
+};
