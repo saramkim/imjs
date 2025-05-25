@@ -2,6 +2,7 @@ import { CallStackPanel } from '@ui/panels/call-stack-panel';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from './resizable-panel-layout';
 import { WebApiPanel } from '@ui/panels/web-api-panel';
 import { TaskQueuePanel } from '@ui/panels/task-queue-panel';
+import { ConsolePanel } from '@ui/panels/console-panel';
 
 export function AppLayout() {
   return (
@@ -19,7 +20,7 @@ export function AppLayout() {
             </ResizablePanel>
             <ResizableHandle />
             <ResizablePanel defaultSize={40}>
-              <div className="h-full p-2">[Console]</div>
+              <ConsolePanel />
             </ResizablePanel>
           </ResizablePanelGroup>
         </ResizablePanel>
