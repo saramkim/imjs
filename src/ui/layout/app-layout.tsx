@@ -1,3 +1,4 @@
+import { CallStackPanel } from '@ui/panels/call-stack-panel';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from './resizable-panel-layout';
 
 export function AppLayout() {
@@ -28,7 +29,7 @@ export function AppLayout() {
             <ResizablePanel defaultSize={70}>
               <ResizablePanelGroup direction="horizontal">
                 <ResizablePanel defaultSize={50}>
-                  <div className="h-full p-2">[Call Stack]</div>
+                  <CallStackPanel />
                 </ResizablePanel>
                 <ResizableHandle />
                 <ResizablePanel defaultSize={50}>
