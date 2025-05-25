@@ -4,12 +4,13 @@ import { WebApiPanel } from '@ui/panels/web-api-panel';
 import { TaskQueuePanel } from '@ui/panels/task-queue-panel';
 import { ConsolePanel } from '@ui/panels/console-panel';
 import { EditorPanel } from '@ui/panels/editor-panel';
+import { Controller } from '@ui/controller';
 
 export function AppLayout() {
   return (
     <div className="h-screen w-screen flex flex-col">
-      <div className="flex justify-between items-center border-b-4 border-gray-300 p-2 bg-gray-50">
-        <div>[Controls]</div>
+      <div className="flex justify-between items-center border-b border-gray-300">
+        <Controller />
         <div>[Timeline]</div>
       </div>
 

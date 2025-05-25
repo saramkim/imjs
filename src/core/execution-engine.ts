@@ -1,7 +1,7 @@
 import { Interpreter } from '@core/interpreter/interpreter';
 import { Simulator } from '@core/simulator/simulator';
 
-export class ExecutionEngine {
+class ExecutionEngine {
   private interpreter = new Interpreter();
   private simulator = new Simulator();
 
@@ -42,3 +42,5 @@ export class ExecutionEngine {
     return this.simulator.getTotalCommands();
   }
 }
+
+export const executionEngine = new ExecutionEngine();
