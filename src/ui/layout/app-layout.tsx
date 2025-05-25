@@ -3,6 +3,7 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from './resizabl
 import { WebApiPanel } from '@ui/panels/web-api-panel';
 import { TaskQueuePanel } from '@ui/panels/task-queue-panel';
 import { ConsolePanel } from '@ui/panels/console-panel';
+import { EditorPanel } from '@ui/panels/editor-panel';
 
 export function AppLayout() {
   return (
@@ -16,7 +17,7 @@ export function AppLayout() {
         <ResizablePanel defaultSize={40}>
           <ResizablePanelGroup direction="vertical">
             <ResizablePanel defaultSize={60}>
-              <div className="h-full p-2">[Editor]</div>
+              <EditorPanel />
             </ResizablePanel>
             <ResizableHandle />
             <ResizablePanel defaultSize={40}>
