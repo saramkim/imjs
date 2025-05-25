@@ -9,6 +9,7 @@ export default defineConfig({
       '@core': '/src/core',
       '@store': '/src/store',
       '@ui': '/src/ui',
+      '@utils': '/src/utils',
     },
   },
 });

@@ -28,7 +28,8 @@
     "paths": {
       "@core/*": ["src/core/*"],
       "@store/*": ["src/store/*"],
-      "@ui/*": ["src/ui/*"]
+      "@ui/*": ["src/ui/*"],
+      "@utils/*": ["src/utils/*"]
     }
   },
   "include": ["src"]
