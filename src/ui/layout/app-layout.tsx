@@ -1,5 +1,6 @@
 import { CallStackPanel } from '@ui/panels/call-stack-panel';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from './resizable-panel-layout';
+import { WebApiPanel } from '@ui/panels/web-api-panel';
 
 export function AppLayout() {
   return (
@@ -33,7 +34,7 @@ export function AppLayout() {
                 </ResizablePanel>
                 <ResizableHandle />
                 <ResizablePanel defaultSize={50}>
-                  <div className="h-full p-2">[Web API]</div>
+                  <WebApiPanel />
                 </ResizablePanel>
               </ResizablePanelGroup>
             </ResizablePanel>
