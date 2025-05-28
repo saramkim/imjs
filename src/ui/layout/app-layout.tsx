@@ -5,13 +5,14 @@ import { TaskQueuePanel } from '@ui/panels/task-queue-panel';
 import { ConsolePanel } from '@ui/panels/console-panel';
 import { EditorPanel } from '@ui/panels/editor-panel';
 import { Controller } from '@ui/controller';
+import { Timeline } from '@ui/timeline';
 
 export function AppLayout() {
   return (
     <div className="h-screen w-screen flex flex-col">
       <div className="flex justify-between items-center border-b border-gray-300">
         <Controller />
-        <div>[Timeline]</div>
+        <Timeline />
       </div>
 
       <ResizablePanelGroup direction="horizontal">
