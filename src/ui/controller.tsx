@@ -2,6 +2,8 @@ import { useConfigStore } from '@store/config-store';
 import { TemplateSelector } from './template-selector';
 import { useCodeStore } from '@store/code-store';
 import { useExecutionActions } from '@hooks/use-execution-actions';
+import { useTimelineStore } from '@store/timeline-store';
+import classNames from 'classnames';
 
 export const Controller = () => {
   const isLoaded = useConfigStore((state) => state.isLoaded);
@@ -32,6 +34,7 @@ const SelectCode = () => {
 
 const Controls = () => {
   const isPlaying = useConfigStore((state) => state.isPlaying);
+  const isCompleted = useTimelineStore((state) => state.isCompleted);
   const setIsLoaded = useConfigStore((state) => state.setIsLoaded);
   const { reset, play, pause, step } = useExecutionActions();
 
@@ -52,15 +55,25 @@ const Controls = () => {
           Pause
         </button>
       ) : (
-        <button onClick={play} className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
-          Play
+        <button
+          onClick={isCompleted ? reset : play}
+          className={classNames(
+            'px-4 py-2 text-white rounded',
+            isCompleted ? 'bg-purple-600 hover:bg-purple-700' : 'bg-green-500 hover:bg-green-600'
+          )}
+        >
+          {isCompleted ? 'Restart' : 'Play'}
         </button>
       )}
 
-      <button onClick={step} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-        Step
-      </button>
-      <SpeedSlider />
+      {!isCompleted && (
+        <>
+          <button onClick={step} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+            Step
+          </button>
+          <SpeedSlider />
+        </>
+      )}
     </div>
   );
 };

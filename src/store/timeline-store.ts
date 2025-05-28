@@ -4,22 +4,27 @@ import type { Command } from '@core/command/command';
 interface TimelineState {
   commands: Command[];
   currentIndex: number;
-  totalCommands: number;
+  isCompleted: boolean;
   setCommands: (cmds: Command[]) => void;
   setCurrentIndex: (index: number) => void;
   reset: () => void;
 }
 
-export const useTimelineStore = create<TimelineState>((set) => ({
+export const useTimelineStore = create<TimelineState>((set, get) => ({
   commands: [],
   currentIndex: 0,
-  totalCommands: 0,
-  setCommands: (cmds) =>
+  isCompleted: false,
+
+  setCommands: (commands) =>
     set({
-      commands: cmds,
-      totalCommands: cmds.length,
+      commands,
       currentIndex: 0,
+      isCompleted: commands.length === 0,
     }),
-  setCurrentIndex: (index) => set({ currentIndex: index }),
-  reset: () => set({ commands: [], currentIndex: 0, totalCommands: 0 }),
+  setCurrentIndex: (index) =>
+    set({
+      currentIndex: index,
+      isCompleted: index >= get().commands.length,
+    }),
+  reset: () => set({ currentIndex: 0, isCompleted: false }),
 }));
