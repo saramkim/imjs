@@ -1,6 +1,5 @@
 import { useConfigStore } from '@store/config-store';
 import { executionEngine } from '@core/execution-engine';
-
 import { TemplateSelector } from './template-selector';
 import { useCodeStore } from '@store/code-store';
 
@@ -31,48 +30,42 @@ const SelectCode = () => {
 
 const Controls = () => {
   const isPlaying = useConfigStore((state) => state.isPlaying);
-  const setIsPlaying = useConfigStore((state) => state.setIsPlaying);
-  const reset = useConfigStore((state) => state.reset);
-
-  const handlePlay = () => {
-    executionEngine.play();
-    setIsPlaying(true);
-  };
-
-  const handlePause = () => {
-    executionEngine.pause();
-    setIsPlaying(false);
-  };
-
-  const handleStep = () => {
-    executionEngine.step();
-  };
-
-  const handleReset = () => {
-    executionEngine.reset();
-    reset();
-  };
+  const setIsLoaded = useConfigStore((state) => state.setIsLoaded);
 
   return (
     <div className="flex items-center gap-4 p-4">
-      <button onClick={handleReset} className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
+      <button
+        onClick={() => {
+          executionEngine.reset();
+          setIsLoaded(false);
+        }}
+        className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+      >
         X
       </button>
 
       {isPlaying ? (
-        <button onClick={handlePause} className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+        <button
+          onClick={() => executionEngine.pause()}
+          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+        >
           Pause
         </button>
       ) : (
-        <button onClick={handlePlay} className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+        <button
+          onClick={() => executionEngine.play()}
+          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+        >
           Play
         </button>
       )}
 
-      <button onClick={handleStep} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+      <button
+        onClick={() => executionEngine.step()}
+        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      >
         Step
       </button>
-
       <SpeedSlider />
     </div>
   );
@@ -80,7 +73,6 @@ const Controls = () => {
 
 const SpeedSlider = () => {
   const speed = useConfigStore((state) => state.speed);
-  const setSpeed = useConfigStore((state) => state.setSpeed);
 
   return (
     <div className="flex items-center gap-2">
@@ -94,11 +86,7 @@ const SpeedSlider = () => {
         max="2000"
         step="100"
         value={speed}
-        onChange={(e) => {
-          const newSpeed = Number(e.target.value);
-          setSpeed(newSpeed);
-          executionEngine.setSpeed(newSpeed);
-        }}
+        onChange={(e) => executionEngine.setSpeed(Number(e.target.value))}
         className="w-40"
       />
       <span className="text-sm text-gray-600">{speed}ms</span>

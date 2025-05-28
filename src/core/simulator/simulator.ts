@@ -1,7 +1,15 @@
 import type { Command } from '@core/command/command';
 import { ExecutionContext } from '@core/simulator/execution-context';
+import { EventEmitter } from '@core/simulator/event-emitter';
 
-export class Simulator {
+export class Simulator extends EventEmitter<{
+  load: Command[];
+  play: void;
+  pause: void;
+  step: ExecutionContext;
+  reset: void;
+  setSpeed: number;
+}> {
   private commands: Command[] = [];
   private ctx: ExecutionContext = new ExecutionContext();
   private currentIndex = 0;
@@ -12,6 +20,7 @@ export class Simulator {
     this.commands = commands;
     this.ctx = new ExecutionContext();
     this.currentIndex = 0;
+    this.emit('load', commands);
   }
 
   step() {
@@ -20,6 +29,7 @@ export class Simulator {
     const command = this.commands[this.currentIndex];
     command.execute(this.ctx);
     this.currentIndex++;
+    this.emit('step', this.ctx);
   }
 
   play() {
@@ -32,12 +42,14 @@ export class Simulator {
       }
       this.step();
     }, this.speed);
+    this.emit('play');
   }
 
   pause() {
     if (this.intervalId !== null) {
       clearInterval(this.intervalId);
       this.intervalId = null;
+      this.emit('pause');
     }
   }
 
@@ -45,14 +57,12 @@ export class Simulator {
     this.pause();
     this.ctx = new ExecutionContext();
     this.currentIndex = 0;
+    this.emit('reset');
   }
 
   setSpeed(ms: number) {
     this.speed = ms;
-    if (this.intervalId !== null) {
-      this.pause();
-      this.play();
-    }
+    this.emit('setSpeed', ms);
   }
 
   getContext() {
@@ -61,9 +71,5 @@ export class Simulator {
 
   getCurrentIndex() {
     return this.currentIndex;
-  }
-
-  getTotalCommands() {
-    return this.commands.length;
   }
 }
