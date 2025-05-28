@@ -1,20 +1,14 @@
 import { create } from 'zustand';
-import { ExecutionContext, type Task, type WebApiTask } from '@core/simulator/execution-context';
+import { ExecutionContext, ExecutionContextState } from '@core/simulator/execution-context';
 
-export interface ExecutionState {
-  callStack: string[];
-  webApi: WebApiTask[];
-  taskQueue: Task[];
-  consoleOutput: string[];
+export interface ExecutionState extends ExecutionContextState {
   updateFromContext: (ctx: ExecutionContext) => void;
   reset: () => void;
 }
 
 export const useExecutionStore = create<ExecutionState>((set) => ({
-  callStack: [],
-  webApi: [],
-  taskQueue: [],
-  consoleOutput: [],
+  ...new ExecutionContextState(),
+
   updateFromContext: (ctx: ExecutionContext) => {
     set({
       callStack: [...ctx.callStack],
@@ -24,11 +18,6 @@ export const useExecutionStore = create<ExecutionState>((set) => ({
     });
   },
   reset: () => {
-    set({
-      callStack: [],
-      webApi: [],
-      taskQueue: [],
-      consoleOutput: [],
-    });
+    set(new ExecutionContextState());
   },
 }));

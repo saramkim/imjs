@@ -8,12 +8,14 @@ export interface WebApiTask {
   label: string;
 }
 
-export class ExecutionContext {
+export class ExecutionContextState {
   callStack: string[] = [];
   webApi: WebApiTask[] = [];
   taskQueue: Task[] = [];
   consoleOutput: string[] = [];
+}
 
+export class ExecutionContext extends ExecutionContextState {
   pushCallStack(fnName: string) {
     this.callStack.push(fnName);
   }
