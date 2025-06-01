@@ -1,0 +1,70 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# IMJS Project Overview
+IMJS (I am JavaScript) is an interactive simulator that visualises the JS runtime  
+(Call Stack, Web API, Task Queue, Event Loop) step by step. It helps developers understand
+how JavaScript code executes under the hood, making it an excellent educational tool
+for learning JavaScript's asynchronous nature and event loop mechanics.
+
+## 1. Tech Stack
+- Yarn berry
+- React + Vite + TypeScript
+- Zustand for state
+- TailwindCSS for UI
+- Monaco Editor for readonly code view
+- Acorn for parsing
+- react-resizable-panels for layout
+
+## 2. Folder Layout
+src/
+├─ core/ # class-based runtime engine
+│ ├─ interpreter/ # AST → Command[]
+│ ├─ simulator/ # executes commands
+│ ├─ command/ # individual Command classes
+| └─ execution-engine.ts
+├─ store/ # Zustand slices
+├─ ui/ # panels, controls, editor, layout
+└─ hooks/, utils/
+
+## 4. Architecture Flow
+```
+[UI Layer]  ←  [Zustand Stores]
+     ↓                   ↑
+[Action Hooks] → [Execution Engine]
+                         ↓
+                    [Core Classes]
+```
+
+The Execution Engine is the central hub that:
+- Interprets code into commands
+- Manages simulation state
+- Coordinates between UI and core logic
+- Updates Zustand stores
+- Handles all runtime events
+
+Data Flow:
+1. UI triggers actions through Action Hooks
+2. Execution Engine processes actions and updates Zustand stores
+3. Core classes (Interpreter/Simulator) execute the actual logic
+4. Zustand store updates trigger UI re-renders
+
+## 5. Key Conventions
+1. **File / dir names:** `kebab-case` only.  
+2. **Core Pattern:** every runtime action is a `Command` with `execute(context: ExecutionContext): void`.  
+3. **State Flow:** UI => useExecutionActions => ExecutionEngine => core classes ⇒ Zustand stores ⇒ UI.
+4. **Imports:** use path aliases (`@core/…`, `@store/…`, `@ui/…`).  
+5. **React:** functional components + hooks; prefer shadcn/ui.  
+6. **Styling:** Tailwind; no inline styles.  
+7. **Testing:** vitest (unit) + playwright (e2e) when tests are added.  
+
+## 6. Ask When Unsure
+If a request conflicts with any rule above, ask the user for clarification instead of guessing.
+
+## 7. Project Goals
+- Provide an intuitive visualization of JavaScript's runtime behavior
+- Help developers understand async/await and Promise mechanics
+- Demonstrate the relationship between Call Stack, Web APIs, and Event Loop
+- Serve as an educational tool for JavaScript internals
