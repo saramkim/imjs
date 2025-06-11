@@ -17,23 +17,42 @@ export class Simulator extends EventEmitter<{
   private stepMs = 500;
 
   load(commands: Command[]) {
-    this.commands = commands;
+    const flattened = this.flattenCommands(commands);
+    this.commands = flattened;
     this.ctx = new ExecutionContext();
+    this.ctx.setAsyncEnabled(false);
     this.currentIndex = 0;
-    this.emit('load', commands);
+    this.emit('load', flattened);
+  }
+
+  private flattenCommands(commands: Command[]): Command[] {
+    const ctx = new ExecutionContext();
+    const queue = [...commands];
+    const flat: Command[] = [];
+    let index = 0;
+
+    while (index < queue.length || ctx.getWebApiTasks().length > 0 || ctx.taskQueue.length > 0) {
+      if (index < queue.length) {
+        const cmd = queue[index];
+        cmd.execute(ctx);
+        flat.push(cmd);
+        index++;
+      } else if (ctx.hasReadyCallback()) {
+        const cb = ctx.dequeueCallback();
+        if (cb) queue.push(...cb);
+      } else if (ctx.getWebApiTasks().length > 0) {
+        const min = Math.min(...ctx.getWebApiTasks().map((t) => t.remaining));
+        ctx.advanceTimers(min);
+      }
+    }
+
+    return flat;
   }
 
   step() {
-    this.ctx.advanceTimers(this.stepMs);
-
     if (this.currentIndex >= this.commands.length) {
-      if (this.ctx.hasReadyCallback()) {
-        const cb = this.ctx.dequeueCallback();
-        if (cb) this.commands.push(...cb);
-      } else {
-        this.pause();
-        return;
-      }
+      this.pause();
+      return;
     }
 
     const cmd = this.commands[this.currentIndex];

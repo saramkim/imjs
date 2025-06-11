@@ -23,6 +23,12 @@ export class ExecutionContextState {
 }
 
 export class ExecutionContext extends ExecutionContextState {
+  private asyncEnabled = true;
+
+  setAsyncEnabled(enabled: boolean) {
+    this.asyncEnabled = enabled;
+  }
+
   pushCallStack(name: string, loc: SourceLocation) {
     this.callStack.push({ name, loc });
   }
@@ -56,7 +62,9 @@ export class ExecutionContext extends ExecutionContextState {
   }
 
   addWebApiTask(task: WebApiTask) {
-    this.webApi.push(task);
+    if (this.asyncEnabled) {
+      this.webApi.push(task);
+    }
   }
 
   removeWebApiTask(taskId: string) {
