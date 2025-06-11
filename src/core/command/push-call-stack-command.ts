@@ -1,11 +1,12 @@
+import type { SourceLocation } from 'acorn';
 import { Command } from './command';
 import type { ExecutionContext } from '@core/simulator/execution-context';
 
 export class PushCallStackCommand extends Command {
   private fnName: string;
 
-  constructor(id: string, fnName: string, line: number) {
-    super(id, line, `call ${fnName}`);
+  constructor(fnName: string, loc: SourceLocation) {
+    super(loc, `call ${fnName}`);
     this.fnName = fnName;
   }
 

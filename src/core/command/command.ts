@@ -1,21 +1,17 @@
 import type { ExecutionContext } from '@core/simulator/execution-context';
+import type { SourceLocation } from 'acorn';
 
 export abstract class Command {
-  private readonly _id: string;
-  private readonly _line: number;
+  private readonly _loc: SourceLocation;
   private readonly _label?: string;
 
-  constructor(id: string, line: number, label?: string) {
-    this._id = id;
-    this._line = line;
+  constructor(loc: SourceLocation, label?: string) {
+    this._loc = loc;
     this._label = label;
   }
 
-  get id(): string {
-    return this._id;
-  }
-  get line(): number {
-    return this._line;
+  get loc(): SourceLocation {
+    return this._loc;
   }
   get label(): string | undefined {
     return this._label;

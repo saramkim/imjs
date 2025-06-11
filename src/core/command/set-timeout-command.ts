@@ -1,13 +1,14 @@
 import { Command } from './command';
 import type { ExecutionContext } from '@core/simulator/execution-context';
 import type { Task } from '@core/simulator/execution-context';
+import type { SourceLocation } from 'acorn';
 
 export class SetTimeoutCommand extends Command {
   private callbackId: string;
   private delay: number;
 
-  constructor(id: string, callbackId: string, delay: number, line: number) {
-    super(id, line, `setTimeout(${delay}ms)`);
+  constructor(callbackId: string, delay: number, loc: SourceLocation) {
+    super(loc, `setTimeout(${delay}ms)`);
     this.callbackId = callbackId;
     this.delay = delay;
   }

@@ -1,11 +1,12 @@
+import type { SourceLocation } from 'acorn';
 import { Command } from './command';
 import type { ExecutionContext } from '@core/simulator/execution-context';
 
 export class ConsoleLogCommand extends Command {
   private message: string;
 
-  constructor(id: string, message: string, line: number) {
-    super(id, line, `console.log`);
+  constructor(message: string, loc: SourceLocation) {
+    super(loc, `console.log`);
     this.message = message;
   }
 

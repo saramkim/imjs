@@ -20,7 +20,6 @@ export class Interpreter {
       if (node.type !== 'ExpressionStatement') continue;
 
       const expr = node.expression;
-      const line = node.loc?.start.line ?? 0;
 
       if (
         expr.type === 'CallExpression' &&
@@ -32,7 +31,7 @@ export class Interpreter {
       ) {
         const arg = expr.arguments[0];
         if (arg?.type === 'Literal' && typeof arg.value === 'string') {
-          commands.push(new ConsoleLogCommand(nextId(), arg.value, line));
+          commands.push(new ConsoleLogCommand(arg.value, node.loc!));
         }
       } else if (
         expr.type === 'CallExpression' &&
@@ -43,10 +42,8 @@ export class Interpreter {
         const delayArg = expr.arguments[1];
         const delay = delayArg?.type === 'Literal' && typeof delayArg.value === 'number' ? delayArg.value : 0;
 
-        const callbackId = nextId();
-
         if (callback?.type === 'ArrowFunctionExpression') {
-          commands.push(new SetTimeoutCommand(callbackId, callbackId, delay, line));
+          commands.push(new SetTimeoutCommand(nextId(), delay, node.loc!));
         }
       }
     }
