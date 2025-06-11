@@ -5,8 +5,8 @@ import type { ExecutionContext } from '@core/simulator/execution-context';
 export class PushCallStackCommand extends Command {
   private fnName: string;
 
-  constructor(fnName: string, loc: SourceLocation) {
-    super(loc, `call ${fnName}`);
+  constructor(loc: SourceLocation, fnName: string) {
+    super(loc, fnName);
     this.fnName = fnName;
   }
 

@@ -13,7 +13,7 @@ export const CallStackPanel = () => {
         <ul className="flex flex-col-reverse gap-2 h-full overflow-y-auto">
           {callStack.map((frame, index) => (
             <li key={index} className="rounded border bg-white p-2 shadow text-sm font-mono">
-              {frame}
+              {frame.name}
             </li>
           ))}
         </ul>

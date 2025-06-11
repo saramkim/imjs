@@ -1,65 +1,15 @@
 import * as acorn from 'acorn';
-import { Command } from '@core/command/command';
-import { ConsoleLogCommand } from '@core/command/console-log-command';
-import { SetTimeoutCommand } from '@core/command/set-timeout-command';
-import { PushCallStackCommand } from '@core/command/push-call-stack-command';
-import { PopCallStackCommand } from '@core/command/pop-call-stack-command';
 
-let commandId = 0;
-const nextId = () => `cmd_${commandId++}`;
+import type { Command } from '../command/command';
+import { PushCallStackCommand } from '../command/push-call-stack-command';
+import { PopCallStackCommand } from '../command/pop-call-stack-command';
+import { ConsoleLogCommand } from '../command/console-log-command';
+import { SetTimeoutCommand } from '../command/set-timeout-command';
 
 export class Interpreter {
   interpret(code: string): Command[] {
     const ast = this.parse(code);
     const commands = this.generateCommands(ast, code);
-
-    return commands;
-  }
-
-  private generateCommands(ast: acorn.Program, code: string): Command[] {
-    const commands: Command[] = [];
-
-    for (const node of ast.body) {
-      if (node.type !== 'ExpressionStatement') continue;
-
-      const expr = node.expression;
-      const fnName = code.slice(expr.start, expr.end);
-
-      if (
-        expr.type === 'CallExpression' &&
-        expr.callee.type === 'MemberExpression' &&
-        expr.callee.object.type === 'Identifier' &&
-        expr.callee.property.type === 'Identifier' &&
-        expr.callee.object.name === 'console' &&
-        expr.callee.property.name === 'log'
-      ) {
-        const arg = expr.arguments[0];
-        if (arg?.type === 'Literal' && typeof arg.value === 'string') {
-          const loc = node.loc!;
-          commands.push(
-            new PushCallStackCommand(fnName, loc),
-            new ConsoleLogCommand(arg.value, loc),
-            new PopCallStackCommand(loc)
-          );
-        }
-      } else if (
-        expr.type === 'CallExpression' &&
-        expr.callee.type === 'Identifier' &&
-        expr.callee.name === 'setTimeout'
-      ) {
-        const callback = expr.arguments[0];
-        const delayArg = expr.arguments[1];
-        const delay = delayArg?.type === 'Literal' && typeof delayArg.value === 'number' ? delayArg.value : 0;
-
-        if (callback?.type === 'ArrowFunctionExpression') {
-          commands.push(
-            new PushCallStackCommand(fnName, node.loc!),
-            new SetTimeoutCommand(nextId(), delay, node.loc!),
-            new PopCallStackCommand(node.loc!)
-          );
-        }
-      }
-    }
 
     return commands;
   }
@@ -70,5 +20,113 @@ export class Interpreter {
       locations: true,
       sourceType: 'script',
     });
+  }
+
+  private generateCommands(ast: acorn.Program, code: string): Command[] {
+    const commands: Command[] = [];
+    this.traverseNode(ast, code, commands);
+    return commands;
+  }
+
+  private traverseNode(node: acorn.Node, code: string, commands: Command[]): void {
+    switch (node.type) {
+      case 'Program':
+        for (const stmt of (node as acorn.Program).body) {
+          this.traverseNode(stmt, code, commands);
+        }
+        break;
+
+      case 'BlockStatement':
+        for (const stmt of (node as acorn.BlockStatement).body) {
+          this.traverseNode(stmt, code, commands);
+        }
+        break;
+
+      case 'ExpressionStatement':
+        this.traverseNode((node as acorn.ExpressionStatement).expression, code, commands);
+        break;
+
+      case 'CallExpression':
+        this.handleCallExpression(node as acorn.CallExpression, code, commands);
+        break;
+
+      case 'IfStatement':
+        const ifStmt = node as acorn.IfStatement;
+        this.traverseNode(ifStmt.test, code, commands);
+        this.traverseNode(ifStmt.consequent, code, commands);
+        if (ifStmt.alternate) {
+          this.traverseNode(ifStmt.alternate, code, commands);
+        }
+        break;
+
+      case 'WhileStatement':
+        const whileStmt = node as acorn.WhileStatement;
+        this.traverseNode(whileStmt.test, code, commands);
+        this.traverseNode(whileStmt.body, code, commands);
+        break;
+
+      case 'ForStatement':
+        const forStmt = node as acorn.ForStatement;
+        if (forStmt.init) this.traverseNode(forStmt.init, code, commands);
+        if (forStmt.test) this.traverseNode(forStmt.test, code, commands);
+        if (forStmt.update) this.traverseNode(forStmt.update, code, commands);
+        this.traverseNode(forStmt.body, code, commands);
+        break;
+
+      case 'FunctionDeclaration':
+      case 'FunctionExpression':
+      case 'ArrowFunctionExpression':
+        const funcNode = node as acorn.FunctionExpression | acorn.ArrowFunctionExpression;
+        if (funcNode.body.type === 'BlockStatement') {
+          this.traverseNode(funcNode.body, code, commands);
+        }
+        break;
+    }
+  }
+
+  private handleCallExpression(expr: acorn.CallExpression, code: string, out: Command[]): void {
+    if (
+      expr.callee.type === 'MemberExpression' &&
+      expr.callee.object.type === 'Identifier' &&
+      expr.callee.property.type === 'Identifier' &&
+      expr.callee.object.name === 'console' &&
+      expr.callee.property.name === 'log'
+    ) {
+      const loc = expr.loc!;
+      const argTexts = expr.arguments.map((arg) => code.slice(arg.start, arg.end)).join(', ');
+
+      out.push(new PushCallStackCommand(loc, code.slice(expr.start, expr.end)));
+      out.push(new ConsoleLogCommand(loc, argTexts));
+      out.push(new PopCallStackCommand(loc));
+    } else if (expr.callee.type === 'Identifier' && expr.callee.name === 'setTimeout') {
+      const [callbackNode, delayNode] = expr.arguments;
+
+      if (
+        callbackNode &&
+        (callbackNode.type === 'FunctionExpression' || callbackNode.type === 'ArrowFunctionExpression')
+      ) {
+        const loc = expr.loc!;
+        const label = code.slice(expr.start, expr.end);
+        const bodySource = this.extractBodySource(callbackNode, code);
+        const callbackCmds = this.interpret(bodySource);
+        const delay = this.extractDelay(delayNode);
+
+        out.push(new PushCallStackCommand(loc, label));
+        out.push(new SetTimeoutCommand(loc, callbackCmds, delay, label));
+        out.push(new PopCallStackCommand(loc));
+      }
+    }
+  }
+
+  private extractDelay(node: acorn.Expression | acorn.SpreadElement): number {
+    return node && node.type === 'Literal' && typeof node.value === 'number' ? node.value : 0;
+  }
+
+  private extractBodySource(fnNode: acorn.FunctionExpression | acorn.ArrowFunctionExpression, code: string): string {
+    if (fnNode.body.type === 'BlockStatement') {
+      return code.slice(fnNode.body.start, fnNode.body.end);
+    }
+    // Arrow shorthand: () => expression
+    return `return ${code.slice(fnNode.body.start, fnNode.body.end)};`;
   }
 }

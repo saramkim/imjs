@@ -12,9 +12,9 @@ export const ConsolePanel = () => {
       </PanelHeader>
       <PanelContent>
         <ul className="flex flex-col gap-1 text-sm font-mono whitespace-pre-wrap">
-          {logs.map((line, i) => (
+          {logs.map((log, i) => (
             <li key={i} className={classNames(i !== logs.length - 1 && 'border-b border-gray-200')}>
-              {line}
+              {log.msg}
             </li>
           ))}
         </ul>

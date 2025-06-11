@@ -4,7 +4,7 @@ import type { ExecutionContext } from '@core/simulator/execution-context';
 
 export class PopCallStackCommand extends Command {
   constructor(loc: SourceLocation) {
-    super(loc, 'return');
+    super(loc);
   }
 
   execute(ctx: ExecutionContext): void {

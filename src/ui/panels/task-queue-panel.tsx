@@ -11,9 +11,12 @@ export const TaskQueuePanel = () => {
       </PanelHeader>
       <PanelContent>
         <ul className="flex gap-2 flex-wrap">
-          {taskQueue.map((task) => (
-            <li key={task.id} className="rounded border bg-white p-2 text-sm font-mono shadow">
-              task-{task.id}
+          {taskQueue.map((task, i) => (
+            <li key={i} className="rounded border bg-white p-2 text-sm font-mono shadow">
+              {task
+                .map((cmd) => cmd.label)
+                .filter((label) => label)
+                .join('\n')}
             </li>
           ))}
         </ul>

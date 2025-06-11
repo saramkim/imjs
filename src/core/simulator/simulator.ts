@@ -14,7 +14,7 @@ export class Simulator extends EventEmitter<{
   private ctx: ExecutionContext = new ExecutionContext();
   private currentIndex = 0;
   private intervalId: number | null = null;
-  private speed = 500; // ms per step
+  private stepMs = 500;
 
   load(commands: Command[]) {
     this.commands = commands;
@@ -24,24 +24,28 @@ export class Simulator extends EventEmitter<{
   }
 
   step() {
-    if (this.currentIndex >= this.commands.length) return;
+    this.ctx.advanceTimers(this.stepMs);
 
-    const command = this.commands[this.currentIndex];
-    command.execute(this.ctx);
+    if (this.currentIndex >= this.commands.length) {
+      if (this.ctx.hasReadyCallback()) {
+        const cb = this.ctx.dequeueCallback();
+        if (cb) this.commands.push(...cb);
+      } else {
+        this.pause();
+        return;
+      }
+    }
+
+    const cmd = this.commands[this.currentIndex];
+    cmd.execute(this.ctx);
     this.currentIndex++;
+
     this.emit('step', this.ctx);
   }
 
   play() {
     if (this.intervalId !== null) return;
-
-    this.intervalId = window.setInterval(() => {
-      if (this.currentIndex >= this.commands.length) {
-        this.pause();
-        return;
-      }
-      this.step();
-    }, this.speed);
+    this.intervalId = window.setInterval(() => this.step(), this.stepMs);
     this.emit('play');
   }
 
@@ -55,13 +59,16 @@ export class Simulator extends EventEmitter<{
 
   reset() {
     this.pause();
-    this.ctx = new ExecutionContext();
-    this.currentIndex = 0;
+    this.load(this.commands);
     this.emit('reset');
   }
 
   setSpeed(ms: number) {
-    this.speed = ms;
+    this.stepMs = ms;
+    if (this.intervalId !== null) {
+      this.pause();
+      this.play();
+    }
     this.emit('setSpeed', ms);
   }
 
