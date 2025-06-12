@@ -15,6 +15,25 @@ export const CODE_TEMPLATES = {
   console.log('End');
   `.trim(),
   },
+  functionDeclaration: {
+    label: 'function declaration example',
+    code: `
+function fn1() {
+  console.log('fn1');
+}
+
+function fn2() {
+  console.log('fn2');
+}
+  
+console.log('Start');
+
+fn1();
+fn2();
+
+console.log('End');
+  `.trim(),
+  },
 } as const;
 
 export type CodeTemplateKey = keyof typeof CODE_TEMPLATES;

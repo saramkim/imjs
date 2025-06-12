@@ -7,6 +7,11 @@ import { ConsoleLogCommand } from '../command/console-log-command';
 import { SetTimeoutCommand } from '../command/set-timeout-command';
 
 export class Interpreter {
+  private functionDeclarations: Record<
+    string,
+    acorn.FunctionDeclaration | acorn.FunctionExpression | acorn.ArrowFunctionExpression
+  > = {};
+
   interpret(code: string): Command[] {
     const ast = this.parse(code);
     const commands = this.generateCommands(ast, code);
@@ -76,10 +81,8 @@ export class Interpreter {
       case 'FunctionDeclaration':
       case 'FunctionExpression':
       case 'ArrowFunctionExpression':
-        const funcNode = node as acorn.FunctionExpression | acorn.ArrowFunctionExpression;
-        if (funcNode.body.type === 'BlockStatement') {
-          this.traverseNode(funcNode.body, code, commands);
-        }
+        const funcNode = node as acorn.FunctionDeclaration | acorn.FunctionExpression | acorn.ArrowFunctionExpression;
+        this.functionDeclarations[funcNode.id?.name ?? ''] = funcNode;
         break;
     }
   }
@@ -115,6 +118,18 @@ export class Interpreter {
         out.push(new SetTimeoutCommand(loc, callbackCmds, delay, label));
         out.push(new PopCallStackCommand(loc));
       }
+    } else if (expr.callee.type === 'Identifier') {
+      const loc = expr.loc!;
+      const functionName = expr.callee.name;
+
+      out.push(new PushCallStackCommand(loc, code.slice(expr.start, expr.end)));
+
+      const functionNode = this.functionDeclarations[functionName];
+      if (functionNode && functionNode.body.type === 'BlockStatement') {
+        this.traverseNode(functionNode.body, code, out);
+      }
+
+      out.push(new PopCallStackCommand(loc));
     }
   }
 
