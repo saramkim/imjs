@@ -3,13 +3,14 @@ import { ExecutionContext } from '@core/simulator/execution-context';
 import { EventEmitter } from '@core/simulator/event-emitter';
 
 export class Simulator extends EventEmitter<{
-  load: Command[];
+  load: number;
   play: void;
   pause: void;
   step: ExecutionContext;
   reset: void;
   setSpeed: number;
 }> {
+  private originalCommands: Command[] = [];
   private commands: Command[] = [];
   private ctx: ExecutionContext = new ExecutionContext();
   private currentIndex = 0;
@@ -17,10 +18,14 @@ export class Simulator extends EventEmitter<{
   private stepMs = 500;
 
   load(commands: Command[]) {
-    this.commands = commands;
+    this.originalCommands = commands;
+    this.commands = [...commands];
     this.ctx = new ExecutionContext();
     this.currentIndex = 0;
-    this.emit('load', commands);
+
+    const totalSteps = commands.reduce((acc, command) => acc + command.getSteps(), 0);
+
+    this.emit('load', totalSteps);
   }
 
   step() {
@@ -59,7 +64,7 @@ export class Simulator extends EventEmitter<{
 
   reset() {
     this.pause();
-    this.load(this.commands);
+    this.load(this.originalCommands);
     this.emit('reset');
   }
 

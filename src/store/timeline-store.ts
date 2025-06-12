@@ -1,30 +1,33 @@
 import { create } from 'zustand';
-import type { Command } from '@core/command/command';
 
 interface TimelineState {
-  commands: Command[];
-  currentIndex: number;
+  totalSteps: number;
+  currentStepIndex: number;
   isCompleted: boolean;
-  setCommands: (cmds: Command[]) => void;
+  setTotalSteps: (steps: number) => void;
   setCurrentIndex: (index: number) => void;
   reset: () => void;
 }
 
 export const useTimelineStore = create<TimelineState>((set, get) => ({
-  commands: [],
-  currentIndex: 0,
+  totalSteps: 0,
+  currentStepIndex: 0,
   isCompleted: false,
 
-  setCommands: (commands) =>
+  setTotalSteps: (steps) =>
     set({
-      commands,
-      currentIndex: 0,
-      isCompleted: commands.length === 0,
+      totalSteps: steps,
+      currentStepIndex: 0,
+      isCompleted: steps === 0,
     }),
   setCurrentIndex: (index) =>
     set({
-      currentIndex: index,
-      isCompleted: index >= get().commands.length,
+      currentStepIndex: index,
+      isCompleted: index >= get().totalSteps,
     }),
-  reset: () => set({ currentIndex: 0, isCompleted: false }),
+  reset: () =>
+    set({
+      currentStepIndex: 0,
+      isCompleted: false,
+    }),
 }));

@@ -11,6 +11,10 @@ export class PushCallStackCommand extends Command {
   }
 
   execute(ctx: ExecutionContext): void {
-    ctx.pushCallStack(this.fnName);
+    ctx.pushCallStack(this.fnName, this.loc);
+  }
+
+  getSteps(): number {
+    return 1;
   }
 }

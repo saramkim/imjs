@@ -9,8 +9,8 @@ class ExecutionEngine {
   private simulator = new Simulator();
 
   constructor() {
-    this.simulator.subscribe('load', (commands) => {
-      useTimelineStore.getState().setCommands(commands);
+    this.simulator.subscribe('load', (totalSteps) => {
+      useTimelineStore.getState().setTotalSteps(totalSteps);
     });
 
     this.simulator.subscribe('step', (ctx) => {

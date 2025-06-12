@@ -10,4 +10,8 @@ export class PopCallStackCommand extends Command {
   execute(ctx: ExecutionContext): void {
     ctx.popCallStack();
   }
+
+  getSteps(): number {
+    return 1;
+  }
 }

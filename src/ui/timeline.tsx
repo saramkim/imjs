@@ -1,12 +1,12 @@
 import { useTimelineStore } from '@store/timeline-store';
 
 export const Timeline = () => {
-  const commands = useTimelineStore((state) => state.commands);
-  const currentIndex = useTimelineStore((state) => state.currentIndex);
+  const totalSteps = useTimelineStore((state) => state.totalSteps);
+  const currentStepIndex = useTimelineStore((state) => state.currentStepIndex);
 
-  if (commands.length === 0) return null;
+  if (totalSteps === 0) return null;
 
-  const progress = (currentIndex / commands.length) * 100;
+  const progress = (currentStepIndex / totalSteps) * 100;
 
   return (
     <div className="flex items-center gap-4 px-4">
@@ -14,7 +14,7 @@ export const Timeline = () => {
         <div className="h-full bg-blue-500 transition-all duration-300" style={{ width: `${progress}%` }} />
       </div>
       <div className="text-sm text-gray-600">
-        {currentIndex} / {commands.length}
+        {currentStepIndex} / {totalSteps}
       </div>
     </div>
   );

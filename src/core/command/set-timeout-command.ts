@@ -22,4 +22,8 @@ export class SetTimeoutCommand extends Command {
       loc: this.loc,
     });
   }
+
+  getSteps(): number {
+    return this.callbackCmds.reduce((acc, command) => acc + command.getSteps(), 0) + 1;
+  }
 }

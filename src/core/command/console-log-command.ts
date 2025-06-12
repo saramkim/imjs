@@ -17,4 +17,8 @@ export class ConsoleLogCommand extends Command {
   getMessage(): string {
     return this.message;
   }
+
+  getSteps(): number {
+    return 1;
+  }
 }

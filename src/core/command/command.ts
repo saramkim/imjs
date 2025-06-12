@@ -18,4 +18,6 @@ export abstract class Command {
   }
 
   abstract execute(ctx: ExecutionContext): void;
+
+  abstract getSteps(): number;
 }
